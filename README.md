@@ -16,7 +16,7 @@ Created to run the code of a function - has 2 parts
 - Thread of execution
 - Memory
 
-```
+```javascript
 const num = 3;
 function multiplyBy2 (inputNumber) {
   const result = inputNumber*2;
@@ -111,3 +111,39 @@ Call stack
 ```
 </details>
 
+<details>
+<summary>Functions and Callbacks</summary>
+<br>
+
+# Functions and Callbacks:
+
+## Higher order functions
+Any function that takes in a function as parameter and/or returns a function
+
+## Callback functions
+Any function that is **passed as an argument to another function**
+
+It allows a function to call another function
+
+A callback function can run after another function has finished
+
+### Example code:
+```javascript
+// Higher order function
+function copyArrayAndManipulate(array, instructions) {
+  const output = [];
+  for (let i = 0; i < array.length; i++) {
+    output.push(instructions(array[i]))
+  }
+  return output;
+}
+
+// Callback 
+function multiplyBy2(input) {
+  return input * 2;
+}
+
+const result = copyArrayAndManipulate([1, 2, 3], multiplyBy2);
+```
+
+</details>
