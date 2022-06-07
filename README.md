@@ -147,3 +147,66 @@ const result = copyArrayAndManipulate([1, 2, 3], multiplyBy2);
 ```
 
 </details>
+
+<details>
+<summary>Closure</summary>
+<br>
+
+# Closure:
+
+### Example of closure in JS
+```javascript
+// returns a function that takes as parameter "num"
+// and returns the result of num * 2;
+function createFunction() {
+  function multiplyBy2 (num){
+    return num * 2;
+  }
+  return multiplyBy2;
+}
+
+// generatedFunc now basically becomes multiplyBy2
+// same functionality, different name
+const generatedFunc = createFunction();
+
+// the value stored into result will be num * 2 -> 3 * 2 -> 6
+const  result = generatedFunc(3);
+
+// IMPORTANT
+// To find the actual code to execute in order to run generatedFunc(3), JavaScript will
+// not look into createFunction which is stored in loacl memory but it will look into generatedFunc
+// which is also stored in global memory
+```
+<br>
+
+## Making our functions have "persistent memory"
+<br>
+
+```javascript
+function outer() {
+  let counter = 0; // will be found inside [[scope]] once the function returns
+  function incrementCounter() {
+    counter++;
+  }
+  return incrementCounter;
+}
+
+const myNewFunction = outer();
+myNewFunction(); // counter == 1
+myNewFunction(); // counter == 2
+```
+
+### So how does this work?
+1. The function *outer* will be saved into global memory
+2. Once we reach *const myNewFunction = outer()*, a constant called myNewFunction will be saved in memory, but the constant will not yet be initialized
+3. The function called *outer* will be executed
+4. It will return the function *incrementCounter* which will be saved into *myNewFunction* in global memory  
+
+## Important:  
+**The incrementCounter function that is returned in step 4. will have a hidden property called *\[\[scope\]\]***  
+**In that *\[\[scope\]\]* property, all data that the *incrementCounter* function needs in order to run, and is inside the higher order function (in this case, the function *outer()*), will be present, and available for use whenever *incrementCounter* will be run**  
+
+### That is how *myNewFunction()* can run successfully, and access the *counter* in order to increment it.
+
+
+</details>
