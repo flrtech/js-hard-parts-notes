@@ -1,3 +1,7 @@
+<details>
+<summary>Principles of JavaScript</summary>
+<br>
+
 # JavaScript Principles:
 
 ## When JavaScript code runs, it:
@@ -105,4 +109,5 @@ Call stack
 
 6. When the program terminates, global() will also be popped off the stack
 ```
+</details>
 
