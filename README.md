@@ -209,7 +209,7 @@ myNewFunction(); // counter == 2
 ### That is how *myNewFunction()* can run successfully, and access the *counter* in order to increment it.
 </details>
 
-<details open>
+<details>
 <summary>Asynchronous JavaScript</summary>
 <br>
 
@@ -244,4 +244,74 @@ console.log("Me first!");
 ### Diagram of what happens when this code is executed  
 ![Callback Queue](./images/callback-queue.jpg)
 
+</details>
+
+<details>
+<summary>Promises</summary>
+<br>
+
+# Promises:
+
+### Let's start from this example:  
+```javascript
+function display(data) {
+  console.log(data);
+}
+
+const futureData = fetch("https://twitter.com/will/tweets/1");
+futureData.then(display);
+
+console.log("Me first!");
+```
+<br>
+
+### Diagram of what happens when this code is executed  
+![Promises Code 1](./images/promise-code-1.jpg)
+
+<br>
+
+### Second example:  
+```javascript
+function display(data) {
+  console.log(data);
+}
+function printHello() {
+  console.log("Hello");
+}
+function blockFor300ms() {
+  // blocks js thread for 300ms
+}
+
+setTimeout(printeHello, 0);
+
+const futureData = fetch("https://twitter.com/will/tweets/1");
+futureData.then(display);
+
+blockFor300ms();
+console.log("Me first");
+```
+
+<br>
+
+### Diagram of what happens when this code is executed  
+![Promises Code 2](./images/promise-code-2.jpg)
+
+### NOTE:
+#### Any function that has a promise object attached, goes into the **Microtask Queue**
+<br>
+
+#### Any other function that triggers a browser feature but does not have a promise object, goes into the **Callback Queue**
+<br>
+
+### IMPORTANT:
+#### The promise object has another hidden property called **onRejection** which allows it to take in a function to be ran whenever an error occurs in the promise
+#### That function can be passed either in the **.catch()** or as the second parameter to **.then()**
+<br>
+
+#### The priority on the **Call Stack** is:
+1. Synchronous functions (*go directly on the stack*)
+2. Functions from the Microtask Queue
+3. Function from the Callback Queue
+
+#### The **Event Loop** is what *polls* the **Call Stack** to check if it's empty, and only when it is, it can add functions from the **Microtask Queue** then from **Callback Queue**
 </details>
