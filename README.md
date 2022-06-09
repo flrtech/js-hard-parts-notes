@@ -297,21 +297,20 @@ console.log("Me first");
 ![Promises Code 2](./images/promise-code-2.jpg)
 
 ### NOTE:
-#### Any function that has a promise object attached, goes into the **Microtask Queue**
-<br>
+Any function that has a promise object attached, goes into the **Microtask Queue**  
 
-#### Any other function that triggers a browser feature but does not have a promise object, goes into the **Callback Queue**
+Any other function that triggers a browser feature but does not have a promise object, goes into the **Callback Queue**
 <br>
 
 ### IMPORTANT:
-#### The promise object has another hidden property called **onRejection** which allows it to take in a function to be ran whenever an error occurs in the promise
-#### That function can be passed either in the **.catch()** or as the second parameter to **.then()**
+The promise object has another hidden property called **onRejection** which allows it to take in a function to be ran whenever an error occurs in the promise  
+That function can be passed either in the **.catch()** or as the second parameter to **.then()**
 <br>
 
-#### The priority on the **Call Stack** is:
+The priority on the **Call Stack** is:
 1. Synchronous functions (*go directly on the stack*)
 2. Functions from the Microtask Queue
 3. Function from the Callback Queue
 
-#### The **Event Loop** is what *polls* the **Call Stack** to check if it's empty, and only when it is, it can add functions from the **Microtask Queue** then from **Callback Queue**
+The **Event Loop** is what *polls* the **Call Stack** to check if it's empty, and only when it is, it can add functions from the **Microtask Queue** then from **Callback Queue**
 </details>
