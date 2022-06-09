@@ -207,6 +207,41 @@ myNewFunction(); // counter == 2
 **In that *\[\[scope\]\]* property, all data that the *incrementCounter* function needs in order to run, and is inside the higher order function (in this case, the function *outer()*), will be present, and available for use whenever *incrementCounter* will be run**  
 
 ### That is how *myNewFunction()* can run successfully, and access the *counter* in order to increment it.
+</details>
 
+<details open>
+<summary>Asynchronous JavaScript</summary>
+<br>
+
+# Asynchronous JavaScript:
+
+### Asynchronous JavaScript is not something that is built into the language itself, but is *called* from the language and provided by the browser.  
+
+### Other examples of functionality provided by the browser that we *call* from JavaScript
+
+| Javascript code  |  Browser feature | 
+|---|---|
+| console  | Console  |
+| setTimeout  | Timer  |
+| document  | HTML DOM  |
+| xhr/fetch  | Network request  |
+| localStorage  | Local storage  |
+
+<br>
+
+### Let's start from this example:  
+```javascript
+function printHello() {
+  console.log("Hello);
+}
+
+setTimeout(printHello, 1000);
+
+console.log("Me first!");
+```
+<br>
+
+### Diagram of what happens when this code is executed  
+![Callback Queue](./images/callback-queue.jpg)
 
 </details>
