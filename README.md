@@ -1,3 +1,7 @@
+## These are my notes for the course JavaScript Hard Parts by Will Sentance. If you want any of this to make any sense, go whatch the course on frontendmasters.com.
+<br>
+
+
 <details>
 <summary>Principles of JavaScript</summary>
 <br>
@@ -313,4 +317,183 @@ The priority on the **Call Stack** is:
 3. Function from the Callback Queue
 
 The **Event Loop** is what *polls* the **Call Stack** to check if it's empty, and only when it is, it can add functions from the **Microtask Queue** then from **Callback Queue**
+</details>
+
+<details >
+<summary>Classes & Prototypes</summary>
+<br>
+
+# Classes & Prototypes:
+
+### How can we bundle up state and functionality in an way that is easy to reason about, easy to add features to and also efficient and performant?
+<br>
+
+### Would this be a solution?
+```javascript
+const user3 = Object.create(null);
+
+user3.name = "Eva";
+user3.score = 9;
+user3.increment = function() {
+  user3.score++;
+};
+
+```
+Not really, this code will be getting repetitive when creating other users. It's breaking DRY principle.
+<br>
+<br>
+
+## Solution 1. Generate objects using function
+```javascript
+function userCreator(name, score) {
+  const newUser = {};
+  newUser.name = name;
+  newUser.score = score;
+  newUser.increment = function() {
+    newUser.score++;
+  };
+  return newUser;
+};
+
+const user1 = userCreator("Will", 3);
+const user2 = userCreator("Tim", 5);
+user1.increment()
+```
+**Problems:** Each time we create a new user we make space in our computer's
+memory for all our data and functions. But our functions are just copies.  
+**Benefits:**  It's simple and easy to reason about!
+<br>
+<br>
+
+## Solution 2. Using the prototype chain
+```javascript
+function userCreator (name, score) {
+  const newUser = Object.create(userFunctionStore);
+  newUser.name = name;
+  newUser.score = score;
+  return newUser;
+};
+
+const userFunctionStore = {
+  increment: function(){this.score++;},
+  login: function(){console.log("Logged in");}
+};
+
+const user1 = userCreator("Will", 3);
+const user2 = userCreator("Tim", 5);
+user1.increment();
+```
+### How does this work?
+We store the increment function in just one object and have the interpreter, if it
+doesn't find that function on *user1*, look up to that object to check if it's there.  
+In other words, we link *user1* and *functionStore* so the interpreter, on not finding **.increment** on *user1*, makes
+sure to check up in *functionStore* where it would find it.
+The link can be made with **Object.create()** technique.  
+
+### Diagram of what happens when this code runs  
+![Proto Diagram](./images/proto-diagram.jpg)
+
+<br>
+
+### But what if we add this line to our code?  
+```javascript
+user1.hasOwnProperty("score");
+```
+Does *user1* have this method? No it does not.  
+Maybe it's on *userFunctionStore*? Nope.  
+Then where is it and how come we can access it?  
+The **prototypal** nature of JavaScript is what allows this to work, and it works like this:
+1. The interpreter will go to *user1* looking for the method *hasOwnProperty* and it won't find it
+2. Since *user1*'s **_ _proto\_ _** property links to *userFunctionStore*, the interpreter will go up the **prototype chain** and look there, but it won't find the method there either
+3. But *userFunctionStore* also has a **_ _proto\_ _** property that links to **Object.prototype**, and on that object reside a number of useful *helper* methods, that all objects *inherit* and can use.
+<br>
+<br>
+
+## The "new" keyword
+### When we call the function that returns an object by using the *new* in front of it, we automate 2 things:
+1. Create a new object (in our case, we create a new *user* object)
+2. Return a new object (*user* object)
+
+Based on what we've seen above in our *userCreator* function, we will basically be able to remove functionality that will be implemented automatically for us by the **new** keyword, and so the resulting code will be this:
+
+```javascript
+function userCreator (name, score) {
+  // const newUser = Object.create(userFunctionStore); -- no longer needed
+
+  // instead of userCreator.name = ...
+  // we now use this.name
+  this.name = name;
+  this.score = score;
+
+  // return newUser; -- no longer needed
+};
+
+// const userFunctionStore = {
+//   increment: function(){this.score++;},
+//   login: function(){console.log("Logged in");}
+// }; -- no longer needed
+
+// userFunctionStore can be replaced with
+userCreator.prototype.increment = function() {
+  this.score++;
+}
+
+// const user1 = userCreator("Will", 3); -- we call it with "new" now
+const user2 = new userCreator("Will", 3);
+```
+### IMPORTANT: All functions in JavaScript are basically function + object combos. That means all functions also have an object attached.
+<br>
+
+### Code
+```javascript
+function userCreator (name, score) {
+  this.name = name;
+  this.score = score;
+};
+
+userCreator.prototype.increment = function() {
+  this.score++;
+};
+userCreator.prototype.login = function() {
+  console.log("login");
+}
+
+const user1 = new userCreator("Will", 3);
+```
+
+### Diagram of what the *new* keyword automates
+![New Keyword](./images/new-keyword.jpg)
+
+We can see that, as we said, functions also have an object attached to them. That object has a property called **prototype** which is also an object, and if we don't add any methods to it, it is usually empty.
+In our case, we can store the methods that we want our *users* to be able to use inside that **prototype** object. Our *users* will have access to that object through the **_ _proto\_ _** property.
+
+
+## The *class* "syntactic sugar"
+What the **class** keyword does, is make adding methods to our "classes" (function + object combos) easier. Instead of adding them through < functionName >.prototype = < method >, we can add our methods directly inside the *class*.  Also, with the **class** keyword, the function part of the function + object combo, now becomes the **constructor**. 
+### Code
+```javascript
+class UserCreator (name, score) {
+  constructor (name, score) {
+    this.name = name;
+    this.score = score;
+  }
+  increment () { this.score++; }
+  login () { console.log("login"); }
+};
+
+// No longer needed, the methods are directly inside the class now;
+// userCreator.prototype.increment = function() {
+//   this.score++;
+// };
+// userCreator.prototype.login = function() {
+//   console.log("login");
+// }
+
+const user1 = new UserCreator("Will", 3);
+```
+<br>
+<br>
+
+![That's all Folks](./images/thats-all.png)
+
 </details>
